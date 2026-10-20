@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Library — Teacher Admin</title>
+  <style>
+    :root{--ink:#24304a;--muted:#68738b;--line:#e8ebf4;--accent:#6658d9;--paper:#fbfcff}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+    main{max-width:980px;margin:0 auto;padding:24px 16px 48px}h1{margin:0 0 8px;font-size:clamp(25px,4vw,36px)}p{line-height:1.55}.muted{color:var(--muted);font-size:14px}
+    .panel{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 6px 20px #24304a08}
+    label{display:block;font-size:13px;font-weight:750;margin:12px 0 6px}input,select,textarea{width:100%;padding:11px 12px;border:1px solid #dfe3ef;border-radius:10px;font:inherit;color:var(--ink);background:white}
+    textarea{min-height:100px;resize:vertical}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.btn{border:0;border-radius:10px;padding:11px 15px;background:var(--accent);color:white;font-weight:750;cursor:pointer;min-height:42px}.btn.secondary{background:#f1efff;color:#5144c5}.btn.danger{background:#fff0f0;color:#b42318}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}.item{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.status{font-size:13px;min-height:22px;margin-top:10px}.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.small{font-size:12px;color:var(--muted)}@media(max-width:640px){.grid{grid-template-columns:1fr}.panel{padding:15px}.item-head{display:block}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="topline">
+    <div>
+      <h1>📚 English Library</h1>
+      <p class="muted">Teacher Admin / Мұғалімнің басқару панелі · Grades 3–11</p>
+    </div>
+    <a href="./index.html">← Back to website / Сайтқа оралу</a>
+  </div>
+
+  <section id="login-panel" class="panel">
+    <h2>Teacher sign in / Мұғалім ретінде кіру</h2>
+    <p class="muted">Бұл бетке тек Supabase-та алдын ала жасалған мұғалім аккаунты кіруі керек.</p>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="teacher@example.com">
+    <label for="password">Password / Құпиясөз</label><input id="password" type="password" autocomplete="current-password">
+    <div class="actions"><button id="login" class="btn">Sign in / Кіру</button></div>
+    <div id="login-status" class="status" role="status"></div>
+  </section>
+
+  <section id="workspace" class="hidden">
+    <div class="panel">
+      <div class="topline"><h2 id="form-title">Add material / Материал қосу</h2><button id="logout" class="btn secondary">Sign out / Шығу</button></div>
+      <form id="material-form">
+        <input id="edit-id" type="hidden">
+        <div class="grid">
+          <div><label for="grade">Grade / Сынып</label><select id="grade" required>
+            <option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option><option value="10">Grade 10</option><option value="11">Grade 11</option>
+          </select></div>
+          <div><label for="kind">Material type / Материал түрі</label><select id="kind" required>
+            <option value="grammar">Grammar / Ереже</option><option value="task">Task / Тапсырма</option><option value="game">Game / Ойын</option>
+          </select></div>
+        </div>
+        <label for="title">Title / Тақырып</label><input id="title" required maxlength="160" placeholder="e.g. Present Simple">
+        <label for="content">Content / Ереже, тапсырма немесе ойын сипаттамасы</label><textarea id="content" required placeholder="Write the English content here…"></textarea>
+        <label for="explanation">Kazakh explanation / Қазақша түсіндірме</label><textarea id="explanation" placeholder="Қазақша түсіндірме, мысалдар…"></textarea>
+        <div class="grid">
+          <div><label for="options">Options / Жауап нұсқалары (әр жолға бір нұсқа)</label><textarea id="options" placeholder="am&#10;is&#10;are&#10;be"></textarea></div>
+          <div><label for="answer">Correct answer / Дұрыс жауап</label><textarea id="answer" placeholder="is"></textarea></div>
+        </div>
+        <label for="game-type">Game type / Ойын түрі</label><select id="game-type">
+          <option value="quiz">Quiz / Викторина</option><option value="matching">Matching / Сәйкестендіру</option><option value="flashcards">Flashcards / Карточкалар</option><option value="word-order">Word order / Сөз тәртібі</option><option value="memory">Memory game / Есте сақтау ойыны</option>
+        </select>
+        <label><input id="published" type="checkbox" checked style="width:auto;margin-right:8px">Published / Оқушыларға көрсету</label>
+        <div class="actions"><button class="btn" type="submit">Save material / Сақтау</button><button class="btn secondary" type="button" id="reset-form">Clear form / Тазалау</button></div>
+        <div id="save-status" class="status" role="status"></div>
+      </form>
+    </div>
+    <div class="panel">
+      <div class="topline"><h2>Saved materials / Сақталған материалдар</h2><button id="refresh" class="btn secondary">Refresh / Жаңарту</button></div>
+      <div class="grid">
+        <div><label for="filter-grade">Filter grade / Сынып бойынша</label><select id="filter-grade"><option value="">All grades</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option></select></div>
+        <div><label for="filter-kind">Filter type / Түрі бойынша</label><select id="filter-kind"><option value="">All types</option><option value="grammar">Grammar</option><option value="task">Task</option><option value="game">Game</option></select></div>
+      </div>
+      <div id="materials-list"><p class="muted">Sign in to load materials.</p></div>
+    </div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script>
+(() => {
+  const cfg = window.ENGLISH_LIBRARY_SUPABASE;
+  const $ = id => document.getElementById(id);
+  const loginPanel = $("login-panel"), workspace = $("workspace");
+  let db = null, currentUser = null;
+  const setStatus = (id, message, bad=false) => { $(id).textContent = message; $(id).style.color = bad ? "#b42318" : "#237a45"; };
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  const configured = cfg && cfg.url && cfg.anonKey && !cfg.url.includes("YOUR_") && !cfg.anonKey.includes("YOUR_");
+
+  if (!configured) {
+    setStatus("login-status", "Setup required: fill in supabase-config.js first.", true);
+    $("login").disabled = true;
+    return;
+  }
+  if (!window.supabase?.createClient) {
+    setStatus("login-status", "Database client did not load. Check your internet connection.", true);
+    $("login").disabled = true;
+    return;
+  }
+  db = window.supabase.createClient(cfg.url, cfg.anonKey);
+
+  async function showSession() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) { currentUser = session.user; loginPanel.classList.add("hidden"); workspace.classList.remove("hidden"); await loadMaterials(); }
+  }
+  $("login").addEventListener("click", async () => {
+    setStatus("login-status", "Signing in…");
+    const { data, error } = await db.auth.signInWithPassword({ email: $("email").value.trim(), password: $("password").value });
+    if (error) return setStatus("login-status", error.message, true);
+    currentUser = data.user; loginPanel.classList.add("hidden"); workspace.classList.remove("hidden"); await loadMaterials();
+  });
+  $("logout").addEventListener("click", async () => {
+    await db.auth.signOut(); currentUser = null; workspace.classList.add("hidden"); loginPanel.classList.remove("hidden");
+  });
+
+  function resetForm() {
+    $("material-form").reset(); $("edit-id").value = ""; $("published").checked = true;
+    $("form-title").textContent = "Add material / Материал қосу";
+    setStatus("save-status", "");
+  }
+  $("reset-form").addEventListener("click", resetForm);
+
+  $("material-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!currentUser) return setStatus("save-status", "Please sign in first.", true);
+    const payload = {
+      grade: Number($("grade").value),
+      kind: $("kind").value,
+      title: $("title").value.trim(),
+      content: $("content").value.trim(),
+      explanation_kk: $("explanation").value.trim(),
+      options: $("options").value.split("\n").map(x => x.trim()).filter(Boolean),
+      answer: $("answer").value.trim(),
+      game_type: $("game-type").value,
+      is_published: $("published").checked
+    };
+    if (!payload.title || !payload.content) return setStatus("save-status", "Title and content are required.", true);
+    setStatus("save-status", "Saving…");
+    const id = $("edit-id").value;
+    let result;
+    if (id) result = await db.from("content_items").update(payload).eq("id", id).select().single();
+    else result = await db.from("content_items").insert(payload).select().single();
+    if (result.error) return setStatus("save-status", result.error.message, true);
+    setStatus("save-status", "Saved successfully / Сәтті сақталды.");
+    resetForm(); await loadMaterials();
+  });
+
+  async function loadMaterials() {
+    $("materials-list").innerHTML = "<p class='muted'>Loading…</p>";
+    let query = db.from("content_items").select("*").order("grade").order("created_at", {ascending:false});
+    if ($("filter-grade").value) query = query.eq("grade", Number($("filter-grade").value));
+    if ($("filter-kind").value) query = query.eq("kind", $("filter-kind").value);
+    const { data, error } = await query;
+    if (error) { $("materials-list").textContent = error.message; return; }
+    if (!data.length) { $("materials-list").innerHTML = "<p class='muted'>No materials yet / Материал әлі қосылмаған.</p>"; return; }
+    $("materials-list").innerHTML = data.map(item => `<article class="item">
+      <div class="item-head"><div><div class="small">GRADE ${item.grade} · ${escapeHtml(item.kind)} · ${item.is_published ? "Published" : "Draft"}</div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.content).slice(0,220)}</p></div>
+      <div class="actions"><button class="btn secondary" data-edit="${item.id}">Edit / Өңдеу</button><button class="btn danger" data-delete="${item.id}">Delete / Жою</button></div></div>
+    </article>`).join("");
+    data.forEach(item => {
+      const edit = document.querySelector(`[data-edit="${item.id}"]`);
+      const del = document.querySelector(`[data-delete="${item.id}"]`);
+      edit.addEventListener("click", () => {
+        $("edit-id").value = item.id; $("grade").value = String(item.grade); $("kind").value = item.kind;
+        $("title").value = item.title; $("content").value = item.content; $("explanation").value = item.explanation_kk || "";
+        $("options").value = Array.isArray(item.options) ? item.options.join("\n") : "";
+        $("answer").value = item.answer || ""; $("game-type").value = item.game_type || "quiz"; $("published").checked = item.is_published;
+        $("form-title").textContent = "Edit material / Материалды өңдеу";
+        $("material-form").scrollIntoView({behavior:"smooth",block:"start"});
+      });
+      del.addEventListener("click", async () => {
+        if (!confirm(`Delete "${item.title}"? / Осы материал жойылсын ба?`)) return;
+        const { error: deleteError } = await db.from("content_items").delete().eq("id", item.id);
+        if (deleteError) alert(deleteError.message); else await loadMaterials();
+      });
+    });
+  }
+  $("refresh").addEventListener("click", loadMaterials);
+  $("filter-grade").addEventListener("change", loadMaterials);
+  $("filter-kind").addEventListener("change", loadMaterials);
+  showSession();
+})();
+</script>
+</body>
+</html>
