@@ -453,5 +453,10 @@ function render(){document.getElementById('breadcrumb').textContent='English Lib
 function setTopic(t){currentTopic=t;flashIndex=0;render()}function nextWord(){flashIndex++;render()}function prevWord(){flashIndex=(flashIndex+getGrade().vocab.length-1)%getGrade().vocab.length;render()}
 render();
 </script>
+
+<div id="online-materials-list"></div>
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-public-loader.js"></script> 
 </body>
 </html>
