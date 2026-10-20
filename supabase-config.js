@@ -4,6 +4,6 @@
  * NEVER put a service_role/secret key in this file.
  */
 window.ENGLISH_LIBRARY_SUPABASE = {
-  url: "YOUR_SUPABASE_URL",
-  anonKey: "YOUR_SUPABASE_ANON_KEY"
+  url: "https://chmlmxkaqsratlqtspgr.supabase.co",
+  anonKey: "sb_publishable_YYck2LuF7NxdtnJiNDqy9w_7eAgBXci"
 };
